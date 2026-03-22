@@ -1,1329 +1,477 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gallery Club — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<title>HonoPs — Super Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #080808;
-  --surface: #101010;
-  --card: #141414;
-  --border: rgba(255,255,255,0.06);
-  --border-hover: rgba(255,255,255,0.12);
-  --gold: #c9a84c;
-  --gold-dim: rgba(201,168,76,0.1);
-  --gold-glow: rgba(201,168,76,0.25);
-  --white: #f0ece3;
-  --muted: rgba(240,236,227,0.4);
-  --muted2: rgba(240,236,227,0.2);
-  --green: #3ecf8e;
-  --green-dim: rgba(62,207,142,0.1);
-  --red: #e05252;
-  --red-dim: rgba(224,82,82,0.1);
-  --blue: #5b9cf6;
-  --blue-dim: rgba(91,156,246,0.1);
-  --orange: #f0884a;
-  --orange-dim: rgba(240,136,74,0.1);
-  --sidebar-w: 220px;
+:root{
+  --bg:#09090b;--surface:#0a0a0d;--card:#111115;
+  --border:rgba(201,168,76,0.1);--border2:rgba(255,255,255,0.05);
+  --gold:#c9a84c;--gold-dim:rgba(201,168,76,0.1);
+  --white:#f0ece3;--muted:rgba(240,236,227,0.42);--muted2:rgba(240,236,227,0.18);
+  --green:#3ecf8e;--green-dim:rgba(62,207,142,0.1);
+  --red:#e05252;--red-dim:rgba(224,82,82,0.1);
+  --blue:#5b9cf6;--blue-dim:rgba(91,156,246,0.1);
+  --orange:#f0884a;--orange-dim:rgba(240,136,74,0.1);
+  --sb:240px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;display:flex;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* SIDEBAR */
+#sidebar{
+  width:var(--sb);min-width:var(--sb);height:100vh;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+  transition:transform 0.3s ease;
+}
+.sb-logo{padding:22px 20px 16px;border-bottom:1px solid var(--border);position:relative}
+.sb-brand{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--gold)}
+.sb-badge{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:2px 8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25)}
+.sb-badge-dot{width:4px;height:4px;background:var(--gold);border-radius:50%;animation:blink 1.5s infinite}
+.sb-badge-t{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.sb-close{display:none;position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(201,168,76,0.2);color:var(--gold);width:24px;height:24px;cursor:pointer;font-size:10px;align-items:center;justify-content:center;transition:all 0.2s}
+.sb-sec{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,0.4);text-transform:uppercase;padding:14px 20px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 8px;border-radius:3px;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);border:1px solid transparent;transition:all 0.15s;user-select:none}
+.ni:hover{background:rgba(255,255,255,0.04);color:var(--white)}
+.ni.on{background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.2);color:var(--gold)}
+.ni-ic{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.ni-badge{margin-left:auto;background:var(--red);color:white;font-size:8px;font-weight:700;padding:2px 5px;border-radius:8px;font-family:'DM Mono',monospace}
+.sb-bot{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border)}
+.user-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:3px}
+.uav{width:28px;height:28px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{
+  height:52px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;
+}
+#hamburger{display:none;background:none;border:1px solid rgba(201,168,76,0.2);color:var(--gold);width:32px;height:32px;cursor:pointer;font-size:15px;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+#page-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold)}
+.live-pill{display:flex;align-items:center;gap:5px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);padding:3px 8px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold)}
+#topbar-date{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+#content{flex:1;overflow-y:auto;padding:22px 24px}
+
+/* OVERLAY */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:149;backdrop-filter:blur(4px)}
+
+/* COMPONENTS */
+.panel{background:var(--card);border:1px solid var(--border2);padding:20px;animation:fadeUp 0.4s ease both}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pt{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.pa{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);cursor:pointer;text-transform:uppercase;border:none;background:none}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--border2);padding:18px;position:relative;overflow:hidden;animation:fadeUp 0.4s ease both}
+.kl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.kv{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;line-height:1;margin-bottom:6px}
+.ks{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px}
+.kglow{position:absolute;bottom:-10px;right:-10px;width:50px;height:50px;border-radius:50%;filter:blur(18px);opacity:0.25}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g31{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.alert{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;animation:fadeUp 0.3s ease both}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.row:last-child{border-bottom:none}
+.rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ri{flex:1;min-width:0}
+.rn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;text-transform:uppercase;flex-shrink:0}
+.bv{background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);color:var(--gold)}
+.bc{background:var(--green-dim);border:1px solid rgba(62,207,142,0.2);color:var(--green)}
+.bp{background:var(--orange-dim);border:1px solid rgba(240,136,74,0.2);color:var(--orange)}
+.br{background:var(--red-dim);border:1px solid rgba(224,82,82,0.2);color:var(--red)}
+.bb{background:var(--blue-dim);border:1px solid rgba(91,156,246,0.2);color:var(--blue)}
+.chart{display:flex;align-items:flex-end;gap:5px;height:90px;margin-bottom:6px}
+.bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:1px;min-height:3px}
+.blbl{font-family:'DM Mono',monospace;font-size:7px;color:var(--muted2);letter-spacing:1px}
+.bval{font-family:'DM Mono',monospace;font-size:7px;color:var(--muted)}
+.progress{height:3px;background:rgba(255,255,255,0.06)}
+.pfill{height:100%;transition:width 0.5s}
+.tbl-hd{display:grid;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)}
+.tbl-row{display:grid;padding:12px 16px;border-bottom:1px solid var(--border2);align-items:center;transition:background 0.15s;cursor:pointer}
+.tbl-row:last-child{border-bottom:none}
+.tbl-row:hover{background:rgba(255,255,255,0.02)}
+.th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:rgba(240,236,227,0.25);text-transform:uppercase}
+.btn-sm{padding:5px 10px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s}
+.status-card{padding:14px;display:flex;align-items:center;gap:12px}
+
+/* MOBILE */
+@media(max-width:768px){
+  #sidebar{position:fixed;top:0;bottom:0;left:0;z-index:150;transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #hamburger{display:flex!important}
+  .sb-close{display:flex!important}
+  .kpi-grid,.g4,.g3{grid-template-columns:1fr 1fr}
+  .g2,.g31{grid-template-columns:1fr}
+  #topbar-date{display:none}
+  #content{padding:16px}
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; overflow:hidden; }
-
-body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'DM Sans', sans-serif;
-  display: flex;
-}
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  height: 100vh;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.sidebar-logo {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebar-logo-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 4px;
-  color: var(--gold);
-  display: block;
-}
-
-.sidebar-logo-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-.sidebar-section {
-  padding: 20px 12px 8px;
-}
-
-.sidebar-section-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted2);
-  text-transform: uppercase;
-  padding: 0 12px;
-  margin-bottom: 6px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-  border: 1px solid transparent;
-  margin-bottom: 2px;
-}
-
-.nav-item:hover {
-  background: rgba(255,255,255,0.04);
-  color: var(--white);
-}
-
-.nav-item.active {
-  background: var(--gold-dim);
-  border-color: rgba(201,168,76,0.2);
-  color: var(--gold);
-}
-
-.nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
-
-.nav-badge {
-  margin-left: auto;
-  background: var(--red);
-  color: white;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-family: 'DM Mono', monospace;
-}
-
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 16px 12px;
-  border-top: 1px solid var(--border);
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.user-card:hover { background: rgba(255,255,255,0.04); }
-
-.user-avatar {
-  width: 30px;
-  height: 30px;
-  background: var(--gold-dim);
-  border: 1px solid rgba(201,168,76,0.3);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.user-name { font-size: 12px; font-weight: 600; }
-.user-role { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
-
-/* ── MAIN ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.topbar {
-  height: 60px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 32px;
-  gap: 16px;
-  flex-shrink: 0;
-  background: var(--surface);
-}
-
-.topbar-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 3px;
-  color: var(--white);
-}
-
-.topbar-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  margin-left: auto;
-}
-
-.live-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--red-dim);
-  border: 1px solid rgba(224,82,82,0.2);
-  padding: 4px 10px;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--red);
-  text-transform: uppercase;
-}
-
-.live-dot {
-  width: 5px; height: 5px;
-  background: var(--red);
-  border-radius: 50%;
-  animation: blink 1.2s infinite;
-}
-
-@keyframes blink {
-  0%,100% { opacity:1; }
-  50% { opacity:0.3; }
-}
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px 32px;
-}
-
-/* ── TABS ── */
-.tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0;
-}
-
-.tab {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 10px 16px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-  margin-bottom: -1px;
-}
-
-.tab:hover { color: var(--white); }
-.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-/* ── KPI GRID ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.kpi {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s;
-  animation: fadeUp 0.4s ease both;
-}
-
-.kpi:nth-child(1) { animation-delay: 0.05s; }
-.kpi:nth-child(2) { animation-delay: 0.1s; }
-.kpi:nth-child(3) { animation-delay: 0.15s; }
-.kpi:nth-child(4) { animation-delay: 0.2s; }
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(16px); }
-  to { opacity:1; transform:translateY(0); }
-}
-
-.kpi:hover { border-color: var(--border-hover); }
-
-.kpi-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.kpi-value {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 38px;
-  letter-spacing: 2px;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.kpi-change {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.kpi-change.up { color: var(--green); }
-.kpi-change.down { color: var(--red); }
-
-.kpi-accent {
-  position: absolute;
-  bottom: 0; right: 0;
-  width: 60px; height: 60px;
-  border-radius: 50%;
-  filter: blur(20px);
-  opacity: 0.3;
-}
-
-/* ── GRID 2 COL ── */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.grid-3-1 {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-/* ── PANEL ── */
-.panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 20px;
-  animation: fadeUp 0.5s ease both;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-
-.panel-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.panel-action {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: var(--gold);
-  cursor: pointer;
-  text-transform: uppercase;
-  border: none;
-  background: none;
-  transition: opacity 0.2s;
-}
-
-.panel-action:hover { opacity: 0.7; }
-
-/* ── CHART BAR ── */
-.chart-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  height: 100px;
-  margin-bottom: 8px;
-}
-
-.bar-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  height: 100%;
-  justify-content: flex-end;
-}
-
-.bar {
-  width: 100%;
-  background: var(--gold-dim);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 1px;
-  transition: all 0.3s;
-  position: relative;
-  cursor: pointer;
-  min-height: 4px;
-}
-
-.bar:hover { background: rgba(201,168,76,0.3); border-color: var(--gold); }
-.bar.today { background: var(--gold); border-color: var(--gold); }
-.bar.today:hover { background: var(--gold); }
-
-.bar-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  color: var(--muted2);
-  letter-spacing: 1px;
-}
-
-.bar-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-/* ── EVENTS LIST ── */
-.event-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
-  cursor: pointer;
-}
-
-.event-row:last-child { border-bottom: none; }
-.event-row:hover { background: rgba(255,255,255,0.02); margin: 0 -20px; padding: 12px 20px; }
-
-.event-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.event-row-info { flex: 1; min-width: 0; }
-.event-row-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.event-row-meta { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 2px; }
-
-.event-row-stats { text-align: right; flex-shrink: 0; }
-.event-row-tickets { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; }
-.event-row-revenue { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
-
-.progress-mini {
-  width: 60px;
-  height: 3px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 4px;
-  margin-left: auto;
-}
-
-.progress-mini-fill {
-  height: 100%;
-  border-radius: 2px;
-}
-
-/* ── RESERVATIONS ── */
-.resa-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.resa-row:last-child { border-bottom: none; }
-
-.resa-avatar {
-  width: 28px; height: 28px;
-  background: var(--gold-dim);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; flex-shrink: 0;
-}
-
-.resa-name { font-size: 12px; font-weight: 600; }
-.resa-detail { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 1px; }
-
-.resa-status {
-  margin-left: auto;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  padding: 3px 8px;
-  text-transform: uppercase;
-}
-
-.status-confirmed { background: var(--green-dim); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
-.status-pending { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(240,136,74,0.2); }
-.status-vip { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
-
-/* ── SCANNER ── */
-.scanner-panel {
-  text-align: center;
-  padding: 32px 20px;
-}
-
-.scanner-box {
-  width: 120px;
-  height: 120px;
-  border: 2px solid var(--gold);
-  margin: 0 auto 16px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gold-dim);
-}
-
-.scanner-box::before, .scanner-box::after {
-  content: '';
-  position: absolute;
-  width: 16px; height: 16px;
-}
-
-.scanner-line {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--gold);
-  animation: scan 2s ease-in-out infinite;
-  box-shadow: 0 0 8px var(--gold);
-}
-
-@keyframes scan {
-  0% { top: 0; }
-  50% { top: calc(100% - 2px); }
-  100% { top: 0; }
-}
-
-.scanner-icon { font-size: 36px; opacity: 0.4; }
-.scanner-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; margin-bottom: 6px; }
-.scanner-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 20px; }
-
-.scan-result {
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.scan-ok { background: var(--green-dim); border: 1px solid rgba(62,207,142,0.2); color: var(--green); }
-.scan-err { background: var(--red-dim); border: 1px solid rgba(224,82,82,0.2); color: var(--red); }
-
-.scan-counter {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-}
-
-.scan-count-item { text-align: center; }
-.scan-count-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
-.scan-count-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-
-/* ── NEWSLETTER ── */
-.newsletter-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.nl-stat {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  padding: 12px;
-  text-align: center;
-}
-
-.nl-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--gold); }
-.nl-stat-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
-
-.btn-send {
-  width: 100%;
-  background: var(--gold);
-  color: var(--bg);
-  border: none;
-  padding: 11px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.2s;
-}
-
-.btn-send:hover { background: #e0bf6a; }
-
-/* ── CAPACITY RING ── */
-.capacity-ring-wrap {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 8px 0;
-}
-
-.ring-svg { flex-shrink: 0; }
-
-.ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
-.ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
-
-.ring-info { flex: 1; }
-.ring-pct { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; line-height: 1; }
-.ring-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
-.ring-detail { font-size: 12px; color: var(--muted); margin-top: 8px; }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); }
-
-/* ── MOBILE SIDEBAR ── */
-.hamburger {
-  display: none;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--white);
-  width: 36px; height: 36px;
-  font-size: 16px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.hamburger:hover { border-color: var(--gold); color: var(--gold); }
-
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 199;
-}
-.sidebar-overlay.open { display: block; }
-
-@media (max-width: 768px) {
-  .hamburger { display: flex; }
-
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    z-index: 200;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
-  }
-  .sidebar.open { transform: translateX(0); }
-
-  .sidebar-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 28px; height: 28px;
-    font-size: 12px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .sidebar-close:hover { border-color: var(--gold); color: var(--gold); }
-}
-
-/* ── TABS CONTENT ── */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* ── ADD EVENT FORM ── */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group.full { grid-column: span 2; }
-
-.form-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.form-input {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  color: var(--white);
-  padding: 10px 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus { border-color: var(--gold); }
-.form-input::placeholder { color: var(--muted2); }
-
-select.form-input option { background: #1a1a1a; }
-
-.btn-create {
-  background: var(--gold);
-  color: var(--bg);
-  border: none;
-  padding: 12px 28px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.2s;
-}
-
-.btn-create:hover { background: #e0bf6a; }
-
-.btn-outline {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  padding: 12px 28px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 </style>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div id="sb-overlay" onclick="closeSb()"></div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo" style="position:relative;">
-    <span class="sidebar-logo-text">GALLERY</span>
-    <span class="sidebar-logo-sub">Admin Panel</span>
-    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-brand">HONOPS</div>
+    <div class="sb-badge"><div class="sb-badge-dot"></div><span class="sb-badge-t">Super Admin</span></div>
+    <button class="sb-close" onclick="closeSb()">✕</button>
   </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Principal</div>
-    <div class="nav-item active" onclick="switchTab('overview', this)">
-      <span class="icon">▦</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="switchTab('events', this)">
-      <span class="icon">◈</span> Eventos
-    </div>
-    <div class="nav-item" onclick="switchTab('reservations', this)">
-      <span class="icon">◎</span> Reservas
-      <span class="nav-badge">3</span>
-    </div>
-    <div class="nav-item" onclick="switchTab('scanner', this)">
-      <span class="icon">⬡</span> Scanner QR
+  <div class="sb-sec">Navigation</div>
+  <div class="ni on" onclick="go('overview',this)"><span class="ni-ic">▦</span>Vue globale</div>
+  <div class="ni" onclick="go('clubs',this)"><span class="ni-ic">◈</span>Tous les clubs</div>
+  <div class="ni" onclick="go('finances',this)"><span class="ni-ic">💰</span>Finances</div>
+  <div class="ni" onclick="go('tickets',this)"><span class="ni-ic">🎟</span>Billets globaux</div>
+  <div class="ni" onclick="go('stats',this)"><span class="ni-ic">⬟</span>Statistiques</div>
+  <div class="ni" onclick="go('notifs',this)"><span class="ni-ic">🔔</span>Notifications<span class="ni-badge">2</span></div>
+  <div class="ni" onclick="go('support',this)"><span class="ni-ic">⚡</span>Support</div>
+  <div class="ni" onclick="go('logs',this)"><span class="ni-ic">◎</span>Logs activité</div>
+  <div class="sb-bot">
+    <div class="user-pill">
+      <div class="uav">👑</div>
+      <div><div style="font-size:11px;font-weight:600">Fondateur</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:1px">HonoPs</div></div>
     </div>
   </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Marketing</div>
-    <div class="nav-item" onclick="switchTab('newsletter', this)">
-      <span class="icon">✉</span> Newsletter
-    </div>
-    <div class="nav-item" onclick="switchTab('stats', this)">
-      <span class="icon">⬟</span> Estadísticas
-    </div>
-  </div>
-
-  <div class="sidebar-section">
-    <div class="sidebar-section-label">Gestión</div>
-    <div class="nav-item">
-      <span class="icon">★</span> Programa VIP
-    </div>
-    <div class="nav-item">
-      <span class="icon">⚙</span> Ajustes
-    </div>
-  </div>
-
-  <div class="sidebar-bottom">
-    <div class="user-card">
-      <div class="user-avatar">👤</div>
-      <div>
-        <div class="user-name">Carlos M.</div>
-        <div class="user-role">Manager</div>
-      </div>
-    </div>
-  </div>
-</aside>
+</div>
 
 <!-- MAIN -->
-<main class="main">
-  <div class="topbar">
-    <button class="hamburger" onclick="toggleSidebar()" id="hamburgerBtn">☰</button>
-    <div class="topbar-title" id="topbarTitle">DASHBOARD</div>
-    <div class="live-pill"><div class="live-dot"></div> EN VIVO</div>
-    <div class="topbar-date" id="topbarDate"></div>
+<div id="main">
+  <div id="topbar">
+    <button id="hamburger" onclick="openSb()">☰</button>
+    <div id="page-title">VUE GLOBALE</div>
+    <div class="live-pill"><div class="sb-badge-dot"></div>ADMIN</div>
+    <div id="topbar-date"></div>
   </div>
-
-  <div class="content">
-
-    <!-- ── OVERVIEW TAB ── -->
-    <div class="tab-content active" id="tab-overview">
-      <div class="tabs">
-        <div class="tab active">Hoy</div>
-        <div class="tab">Esta semana</div>
-        <div class="tab">Este mes</div>
-      </div>
-
-      <!-- KPIs -->
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">Entradas vendidas</div>
-          <div class="kpi-value" style="color:var(--gold)">247</div>
-          <div class="kpi-change up">↑ +18% vs semana pasada</div>
-          <div class="kpi-accent" style="background:var(--gold)"></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Ingresos hoy</div>
-          <div class="kpi-value" style="color:var(--green)">4.235€</div>
-          <div class="kpi-change up">↑ +12% vs semana pasada</div>
-          <div class="kpi-accent" style="background:var(--green)"></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Reservas pendientes</div>
-          <div class="kpi-value" style="color:var(--orange)">3</div>
-          <div class="kpi-change down">↓ Por confirmar</div>
-          <div class="kpi-accent" style="background:var(--orange)"></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Clientes en lista</div>
-          <div class="kpi-value" style="color:var(--blue)">1.482</div>
-          <div class="kpi-change up">↑ +34 esta semana</div>
-          <div class="kpi-accent" style="background:var(--blue)"></div>
-        </div>
-      </div>
-
-      <div class="grid-3-1">
-        <!-- Ventas por día -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Ventas — últimos 7 días</div>
-            <button class="panel-action">exportar →</button>
-          </div>
-          <div class="chart-bars" id="chartBars"></div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px;">
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">LUN</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">MAR</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">MIÉ</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">JUE</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">VIE</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">SAB</span>
-            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">HOY</span>
-          </div>
-        </div>
-
-        <!-- Capacidad -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Capacidad</div>
-          </div>
-          <div class="capacity-ring-wrap">
-            <svg class="ring-svg" width="90" height="90" viewBox="0 0 90 90">
-              <circle class="ring-bg" cx="45" cy="45" r="36"/>
-              <circle class="ring-fill" cx="45" cy="45" r="36"
-                stroke="var(--gold)"
-                stroke-dasharray="226"
-                stroke-dashoffset="57"
-                transform="rotate(-90 45 45)"/>
-            </svg>
-            <div class="ring-info">
-              <div class="ring-pct" style="color:var(--gold)">75%</div>
-              <div class="ring-label">Ocupación</div>
-              <div class="ring-detail">300 / 400 entradas</div>
-            </div>
-          </div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;">NORMAL</span>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--white);">220</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;">EARLY BIRD</span>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--white);">50</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;">
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px;">★ VIP</span>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);">30</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Próximos eventos + Reservas recientes -->
-      <div class="grid-2">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Próximos eventos</div>
-            <button class="panel-action" onclick="switchTab('events', document.querySelector('.nav-item:nth-child(2)'))">ver todos →</button>
-          </div>
-          <div id="eventsList"></div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Reservas recientes</div>
-            <button class="panel-action">ver todas →</button>
-          </div>
-          <div id="reservasList"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── EVENTS TAB ── -->
-    <div class="tab-content" id="tab-events">
-      <div class="grid-2" style="margin-bottom:12px;">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Crear nuevo evento</div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Nombre del evento</label>
-              <input class="form-input" type="text" placeholder="TECHNO NIGHT">
-            </div>
-            <div class="form-group">
-              <label class="form-label">DJ / Artista</label>
-              <input class="form-input" type="text" placeholder="Charlotte de Witte">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Fecha</label>
-              <input class="form-input" type="date">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Hora inicio</label>
-              <input class="form-input" type="time" value="23:00">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Género musical</label>
-              <select class="form-input">
-                <option>Techno</option>
-                <option>House</option>
-                <option>Afro House</option>
-                <option>Tech House</option>
-                <option>Reggaeton</option>
-                <option>Minimal</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Precio entrada</label>
-              <input class="form-input" type="number" placeholder="15">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Aforo máximo</label>
-              <input class="form-input" type="number" placeholder="400">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Precio VIP</label>
-              <input class="form-input" type="number" placeholder="120">
-            </div>
-            <div class="form-group full">
-              <label class="form-label">Descripción</label>
-              <input class="form-input" type="text" placeholder="Una noche increíble con...">
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn-create">Publicar evento</button>
-            <button class="btn-outline">Guardar borrador</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Eventos activos</div>
-          </div>
-          <div id="eventsManageList"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── RESERVATIONS TAB ── -->
-    <div class="tab-content" id="tab-reservations">
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Reservas pendientes de confirmación</div>
-          <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:1px;">3 PENDIENTES</span>
-        </div>
-        <div id="allReservasList"></div>
-      </div>
-    </div>
-
-    <!-- ── SCANNER TAB ── -->
-    <div class="tab-content" id="tab-scanner">
-      <div class="grid-2">
-        <div class="panel">
-          <div class="scanner-panel">
-            <div class="scanner-box">
-              <div class="scanner-line"></div>
-              <div class="scanner-icon">⬛</div>
-            </div>
-            <div class="scanner-title">SCANNER QR</div>
-            <div class="scanner-sub">Apunta la cámara al código QR de la entrada</div>
-            <div class="scan-result scan-ok" id="scanResult1">✔ &nbsp;VÁLIDO — Carlos M. · Techno Night · SAB 29 MAR</div>
-            <div class="scan-result scan-err" id="scanResult2">✕ &nbsp;RECHAZADO — Entrada ya utilizada</div>
-            <button class="btn-create" style="width:100%;margin-top:8px;">Activar Cámara</button>
-            <div class="scan-counter">
-              <div class="scan-count-item">
-                <div class="scan-count-num" style="color:var(--green)">143</div>
-                <div class="scan-count-label">Entradas OK</div>
-              </div>
-              <div class="scan-count-item">
-                <div class="scan-count-num" style="color:var(--red)">4</div>
-                <div class="scan-count-label">Rechazadas</div>
-              </div>
-              <div class="scan-count-item">
-                <div class="scan-count-num" style="color:var(--muted)">153</div>
-                <div class="scan-count-label">Restantes</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Últimas entradas escaneadas</div>
-          </div>
-          <div id="scanHistory"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── NEWSLETTER TAB ── -->
-    <div class="tab-content" id="tab-newsletter">
-      <div class="grid-2">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Enviar newsletter</div>
-          </div>
-          <div class="newsletter-stats">
-            <div class="nl-stat">
-              <div class="nl-stat-num">1.482</div>
-              <div class="nl-stat-label">Suscriptores</div>
-            </div>
-            <div class="nl-stat">
-              <div class="nl-stat-num">68%</div>
-              <div class="nl-stat-label">Tasa apertura</div>
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label class="form-label">Asunto del email</label>
-            <input class="form-input" type="text" placeholder="🔥 Esta semana en Gallery Club...">
-          </div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label class="form-label">Evento destacado</label>
-            <select class="form-input">
-              <option>TECHNO NIGHT — 29 MAR</option>
-              <option>HOUSE SESSIONS — 28 MAR</option>
-              <option>OPENING PARTY — 5 ABR</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:16px;">
-            <label class="form-label">Mensaje personalizado</label>
-            <input class="form-input" type="text" placeholder="No te pierdas la noche más grande del año...">
-          </div>
-          <button class="btn-send">✉ Enviar a 1.482 personas</button>
-        </div>
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Historial de envíos</div>
-          </div>
-          <div id="newsletterHistory"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── STATS TAB ── -->
-    <div class="tab-content" id="tab-stats">
-      <div class="kpi-grid" style="margin-bottom:24px;">
-        <div class="kpi">
-          <div class="kpi-label">Ingresos este mes</div>
-          <div class="kpi-value" style="color:var(--gold)">18.4K€</div>
-          <div class="kpi-change up">↑ +22% vs mes anterior</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Total entradas</div>
-          <div class="kpi-value" style="color:var(--green)">1.847</div>
-          <div class="kpi-change up">↑ +15%</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Ticket medio</div>
-          <div class="kpi-value" style="color:var(--blue)">17.2€</div>
-          <div class="kpi-change up">↑ +3%</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Tasa conversión</div>
-          <div class="kpi-value" style="color:var(--orange)">34%</div>
-          <div class="kpi-change down">↓ -2%</div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Ingresos por evento — Marzo 2026</div>
-        </div>
-        <div id="statsChart" style="height:120px;display:flex;align-items:flex-end;gap:8px;margin-bottom:8px;"></div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</main>
+  <div id="content"></div>
+</div>
 
 <script>
-// ── SIDEBAR TOGGLE ──
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('open');
-}
+// ── DATA ──
+const CLUBS=[
+  {id:1,nom:'Gallery Club',ville:'Málaga',slug:'gallery-club',color:'#c9a84c',statut:'active',billets:247,rev:4410,trial:null,pastDue:null,inscrit:'Jan 2026'},
+  {id:2,nom:'Sala Gold',ville:'Málaga',slug:'sala-gold',color:'#5b9cf6',statut:'trial',billets:0,rev:0,trial:67,pastDue:null,inscrit:'Fév 2026'},
+  {id:3,nom:'Discoteca Andén',ville:'Málaga',slug:'discoteca-anden',color:'#3ecf8e',statut:'past_due',billets:142,rev:2840,trial:null,pastDue:9,inscrit:'Nov 2025'},
+  {id:4,nom:'Fabrik',ville:'Madrid',slug:'fabrik',color:'#e05252',statut:'active',billets:580,rev:11600,trial:null,pastDue:null,inscrit:'Oct 2025'},
+  {id:5,nom:'Pacha',ville:'Ibiza',slug:'pacha',color:'#f0884a',statut:'active',billets:890,rev:22250,trial:null,pastDue:null,inscrit:'Sep 2025'},
+  {id:6,nom:'Joy Eslava',ville:'Madrid',slug:'joy-eslava',color:'#9b59b6',statut:'trial',billets:0,rev:0,trial:45,pastDue:null,inscrit:'Mar 2026'},
+]
+const TICKETS=[
+  {nom:'Carlos M.',email:'carlos@gmail.com',event:'TECHNO NIGHT',club:'Gallery Club',type:'normal',prix:18,date:'22 Mar',used:true},
+  {nom:'Sofia R.',email:'sofia@gmail.com',event:'TECHNO NIGHT',club:'Gallery Club',type:'vip',prix:120,date:'22 Mar',used:false},
+  {nom:'Marcus T.',email:'marcus@gmail.com',event:'HOUSE SESSIONS',club:'Gallery Club',type:'early',prix:14,date:'21 Mar',used:false},
+  {nom:'Laura K.',email:'laura@gmail.com',event:'FABRIK NIGHT',club:'Fabrik',type:'vip',prix:80,date:'19 Mar',used:true},
+  {nom:'Pedro S.',email:'pedro@gmail.com',event:'PACHA OPENING',club:'Pacha',type:'normal',prix:25,date:'18 Mar',used:true},
+  {nom:'Ana M.',email:'ana@gmail.com',event:'MINIMAL RAVE',club:'Gallery Club',type:'normal',prix:22,date:'20 Mar',used:false},
+]
+const LOGS=[
+  {action:'billet_vendu',club:'Gallery Club',detail:'Sofia R. · VIP · 120€',time:'23:47',color:'var(--gold)',icon:'🎟'},
+  {action:'club_inscrit',club:'Joy Eslava',detail:'Madrid · Trial démarré',time:'22:15',color:'var(--green)',icon:'✓'},
+  {action:'qr_scanne',club:'Gallery Club',detail:'Carlos M. · VALIDE',time:'23:51',color:'var(--orange)',icon:'⬡'},
+  {action:'paiement_echoue',club:'Discoteca Andén',detail:'Carte refusée · Jour 9',time:'18:30',color:'var(--red)',icon:'✕'},
+  {action:'newsletter_envoyee',club:'Fabrik',detail:'1.247 emails · 71% ouverture',time:'12:00',color:'var(--blue)',icon:'✉'},
+  {action:'billet_vendu',club:'Pacha',detail:'Pedro S. · Normal · 25€',time:'11:22',color:'var(--gold)',icon:'🎟'},
+  {action:'club_reactive',club:'Joy Eslava',detail:'Abonnement réactivé',time:'10:05',color:'var(--green)',icon:'▶'},
+]
 
-// Close sidebar when nav item clicked on mobile
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('sidebarOverlay').classList.remove('open');
-      }
-    });
-  });
-});
+const actifs=CLUBS.filter(c=>c.statut==='active').length
+const trials=CLUBS.filter(c=>c.statut==='trial').length
+const pastDue=CLUBS.filter(c=>c.statut==='past_due').length
+const mrr=actifs*200
+const totalRev=CLUBS.reduce((s,c)=>s+c.rev,0)
+const totalBillets=CLUBS.reduce((s,c)=>s+c.billets,0)
 
-// ── DATE ──
-const now = new Date();
-document.getElementById('topbarDate').textContent =
-  now.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).toUpperCase() +
-  ' · ' + now.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
-
-// ── TAB SWITCHING ──
-function switchTab(name, navEl) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  if (navEl) navEl.classList.add('active');
-  const titles = { overview:'DASHBOARD', events:'EVENTOS', reservations:'RESERVAS', scanner:'SCANNER QR', newsletter:'NEWSLETTER', stats:'ESTADÍSTICAS' };
-  document.getElementById('topbarTitle').textContent = titles[name] || name.toUpperCase();
-}
-
-// ── CHART BARS ──
-const salesData = [45, 82, 38, 120, 210, 285, 247];
-const maxSale = Math.max(...salesData);
-const chartBars = document.getElementById('chartBars');
-salesData.forEach((val, i) => {
-  const wrap = document.createElement('div');
-  wrap.className = 'bar-wrap';
-  const pct = Math.round((val / maxSale) * 100);
-  wrap.innerHTML = `
-    <div class="bar-val">${val}</div>
-    <div class="bar ${i === salesData.length-1 ? 'today' : ''}" style="height:${pct}%"></div>
-  `;
-  chartBars.appendChild(wrap);
-});
-
-// ── EVENTS LIST ──
-const events = [
-  { name: 'TECHNO NIGHT', dj: 'Charlotte de Witte b2b Amelie Lens', date: 'SAB 29 MAR', sold: 300, total: 400, revenue: '5.400€', color: 'var(--gold)' },
-  { name: 'HOUSE SESSIONS', dj: 'Black Coffee', date: 'VIE 28 MAR', sold: 180, total: 400, revenue: '3.600€', color: 'var(--blue)' },
-  { name: 'OPENING PARTY', dj: 'Fisher + Chris Lake', date: 'SAB 5 ABR', sold: 200, total: 400, revenue: '5.000€', color: 'var(--green)' },
-];
-
-function renderEventsList(containerId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = events.map(ev => `
-    <div class="event-row">
-      <div class="event-dot" style="background:${ev.color}"></div>
-      <div class="event-row-info">
-        <div class="event-row-name">${ev.name}</div>
-        <div class="event-row-meta">${ev.date} · ${ev.dj}</div>
+// ── PAGES ──
+const PAGES={
+  overview:()=>`
+    ${pastDue>0?`<div class="alert" style="background:var(--red-dim);border:1px solid rgba(224,82,82,0.25)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:5px;height:5px;background:var(--red);border-radius:50%;animation:blink 1s infinite"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--red);letter-spacing:1px">${pastDue} CLUB EN RETARD DE PAIEMENT — DISCOTECA ANDÉN — 9 JOURS</span>
       </div>
-      <div class="event-row-stats">
-        <div class="event-row-tickets" style="color:${ev.color}">${ev.sold}</div>
-        <div class="event-row-revenue">${ev.revenue}</div>
-        <div class="progress-mini">
-          <div class="progress-mini-fill" style="width:${Math.round(ev.sold/ev.total*100)}%;background:${ev.color}"></div>
+      <button class="btn-sm" style="background:var(--red-dim);border:1px solid rgba(224,82,82,0.3);color:var(--red)" onclick="go('finances',null)">Voir →</button>
+    </div>`:''}
+    <div class="kpi-grid">
+      ${[['Clubs actifs',actifs,'var(--green)','↑ +1 cette semaine'],['MRR récurrent',mrr+'€','var(--gold)','En croissance'],['Total billets',totalBillets.toLocaleString(),'var(--blue)','↑ +247 ce mois'],['Volume total',Math.round(totalRev/1000)+'K€','var(--orange)','Billets via HonoPs']].map(([l,v,c,s],i)=>`
+      <div class="kpi" style="animation-delay:${i*.05}s">
+        <div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div>
+        <div class="ks" style="color:var(--green)">${s}</div>
+        <div class="kglow" style="background:${c}"></div>
+      </div>`).join('')}
+    </div>
+    <div class="g4">
+      ${[['Trial',trials,'var(--blue)','◎'],['Actifs',actifs,'var(--green)','✓'],['En retard',pastDue,'var(--red)','⚠'],['Annulés',0,'var(--muted)','✕']].map(([l,v,c,ic])=>`
+      <div style="background:var(--card);border:1px solid ${l==='En retard'&&v>0?'rgba(224,82,82,0.25)':'var(--border2)'};padding:14px;display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;background:${c}15;border:1px solid ${c}30;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:${c};flex-shrink:0">${ic}</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:${c};letter-spacing:2px;line-height:1">${v}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">${l}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="g31">
+      <div class="panel" style="animation-delay:.3s">
+        <div class="ph"><div class="pt">Volume billets — 6 derniers mois</div><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:2px">${Math.round(totalRev/1000)}K€ TOTAL</div></div>
+        <div class="chart" id="adminChart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">${['OCT','NOV','DÉC','JAN','FÉV','MAR'].map(m=>`<span style="flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:7px;color:var(--muted2)">${m}</span>`).join('')}</div>
+      </div>
+      <div class="panel" style="animation-delay:.35s">
+        <div class="pt" style="margin-bottom:14px">Projection MRR</div>
+        ${[[actifs,"Aujourd'hui",'var(--gold)'],[10,'À 10 clubs','var(--green)'],[25,'À 25 clubs','var(--blue)'],[50,'À 50 clubs','var(--orange)']].map(([n,l,c])=>`
+        <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border2)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">${l}</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${c};letter-spacing:1px">${(n*200).toLocaleString()}€/mois</span>
+          </div>
+          <div class="progress"><div class="pfill" style="width:${Math.min(n/50*100,100)}%;background:${c}"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>`,
+
+  clubs:()=>`
+    <div style="background:var(--card);border:1px solid var(--border2)">
+      <div class="tbl-hd" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 100px">
+        ${['Club','Ville','Statut','Info','Inscrit','Actions'].map(h=>`<div class="th">${h}</div>`).join('')}
+      </div>
+      ${CLUBS.map(c=>{
+        const sc={active:{bg:'var(--green-dim)',b:'rgba(62,207,142,0.2)',col:'var(--green)',l:'ACTIF'},trial:{bg:'var(--blue-dim)',b:'rgba(91,156,246,0.2)',col:'var(--blue)',l:'TRIAL'},past_due:{bg:'var(--red-dim)',b:'rgba(224,82,82,0.2)',col:'var(--red)',l:'EN RETARD'},cancelled:{bg:'rgba(255,255,255,0.03)',b:'var(--border2)',col:'var(--muted)',l:'ANNULÉ'}}[c.statut]||{}
+        return `<div class="tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 100px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:30px;height:30px;background:${c.color}20;border:1px solid ${c.color}40;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🎵</div>
+            <div><div style="font-size:12px;font-weight:600">${c.nom}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-top:1px">honops.es/${c.slug}</div></div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${c.ville}</div>
+          <div><span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;background:${sc.bg};border:1px solid ${sc.b};color:${sc.col};text-transform:uppercase">${sc.l}</span></div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:${c.statut==='past_due'?'var(--red)':c.statut==='trial'?'var(--blue)':'var(--green)'}">
+            ${c.statut==='trial'?c.trial+'j restants':c.statut==='past_due'?'⚠ '+c.pastDue+'j retard':c.statut==='active'?'✓ OK':'—'}
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2)">${c.inscrit}</div>
+          <div style="display:flex;gap:4px">
+            <button class="btn-sm" style="background:rgba(255,255,255,0.05);border:1px solid var(--border2);color:var(--muted)" title="Voir site" onclick="alert('Ouverture de honops.es/${c.slug}...')">↗</button>
+            <button class="btn-sm" style="background:${c.statut==='cancelled'?'var(--green-dim)':'var(--red-dim)'};border:1px solid ${c.statut==='cancelled'?'rgba(62,207,142,0.2)':'rgba(224,82,82,0.2)'};color:${c.statut==='cancelled'?'var(--green)':'var(--red)'}" onclick="alert('${c.statut==='cancelled'?'Club réactivé':'Club suspendu'}!')">
+              ${c.statut==='cancelled'?'✓':'✕'}
+            </button>
+          </div>
+        </div>`}).join('')}
+    </div>`,
+
+  finances:()=>`
+    <div class="g3" style="margin-bottom:14px">
+      ${[['MRR actuel',mrr+'€','3 clubs payants','var(--gold)'],['MRR potentiel',((actifs+trials)*200)+'€','Si tous les trials convertissent','var(--green)'],['À risque',(pastDue*200)+'€',pastDue+' club en retard','var(--red)']].map(([l,v,s,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div><div class="ks" style="color:var(--muted);letter-spacing:1px">${s}</div></div>`).join('')}
+    </div>
+    <div style="background:var(--card);border:1px solid rgba(224,82,82,0.2);padding:20px;margin-bottom:12px">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <div style="width:5px;height:5px;background:var(--red);border-radius:50%;animation:blink 1s infinite"></div>
+        CLUBS EN RETARD — ACTION REQUISE
+      </div>
+      ${CLUBS.filter(c=>c.statut==='past_due').map(c=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+        <div><div style="font-size:12px;font-weight:600;margin-bottom:3px">${c.nom}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--red);letter-spacing:1px">${c.pastDue} JOURS DE RETARD · ${c.pastDue>=8?'VENTE BLOQUÉE':'AVERTISSEMENT ACTIF'}</div></div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm" style="background:var(--red-dim);border:1px solid rgba(224,82,82,0.2);color:var(--red)" onclick="alert('Email de relance envoyé à '+${JSON.stringify(c.nom)})">✉ Relancer</button>
+          <button class="btn-sm" style="background:var(--green-dim);border:1px solid rgba(62,207,142,0.2);color:var(--green)" onclick="alert('Club réactivé!')">✓ Réactiver</button>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="panel">
+      <div class="pt" style="margin-bottom:14px">Tous les abonnements</div>
+      ${CLUBS.map(c=>{
+        const colors={active:'var(--green)',trial:'var(--blue)',past_due:'var(--red)',cancelled:'var(--muted)'}
+        const labels={active:'200€/mois',trial:'TRIAL',past_due:'EN RETARD',cancelled:'ANNULÉ'}
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border2)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:6px;height:6px;border-radius:50%;background:${colors[c.statut]};flex-shrink:0"></div>
+            <div><div style="font-size:12px;font-weight:600">${c.nom}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px">${c.ville}</div></div>
+          </div>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:${colors[c.statut]};letter-spacing:1px">${labels[c.statut]}</span>
+        </div>`}).join('')}
+    </div>`,
+
+  tickets:()=>`
+    <div class="g4" style="margin-bottom:14px">
+      ${[['Total billets',totalBillets,'var(--gold)'],['Volume total',Math.round(totalRev/1000)+'K€','var(--green)'],['Ticket moyen','22.1€','var(--blue)'],['Taux utilisation','31%','var(--orange)']].map(([l,v,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div></div>`).join('')}
+    </div>
+    <div class="panel">
+      <div class="pt" style="margin-bottom:14px">Répartition par type</div>
+      <div class="g3">
+        ${[['Early Bird',312,'var(--green)',17],['Normal',1247,'var(--gold)',67],['VIP',300,'var(--orange)',16]].map(([l,n,c,p])=>`
+        <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--border2);text-align:center">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:${c};letter-spacing:2px;line-height:1;margin-bottom:4px">${n}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">${l}</div>
+          <div class="progress"><div class="pfill" style="width:${p}%;background:${c}"></div></div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:${c};margin-top:4px">${p}%</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel" style="margin-top:10px">
+      <div class="pt" style="margin-bottom:14px">Derniers billets (toute la plateforme)</div>
+      <div class="tbl-hd" style="grid-template-columns:2fr 2fr 1fr 1fr 1fr 70px;margin:0 -20px;padding:8px 20px">
+        ${['Client','Événement','Type','Prix','Date','Statut'].map(h=>`<div class="th">${h}</div>`).join('')}
+      </div>
+      ${TICKETS.map(t=>`
+      <div class="tbl-row" style="grid-template-columns:2fr 2fr 1fr 1fr 1fr 70px;margin:0 -20px;padding:11px 20px">
+        <div><div style="font-size:11px;font-weight:600">${t.nom}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-top:1px">${t.email}</div></div>
+        <div><div style="font-size:11px">${t.event}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:1px;margin-top:1px">${t.club}</div></div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:${t.type==='vip'?'var(--orange)':'var(--muted)'};letter-spacing:1px;text-transform:uppercase">${t.type}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:1px">${t.prix}€</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2)">${t.date}</div>
+        <div><span style="font-family:'DM Mono',monospace;font-size:7px;padding:2px 6px;background:${t.used?'rgba(255,255,255,0.05)':'var(--green-dim)'};border:1px solid ${t.used?'var(--border2)':'rgba(62,207,142,0.2)'};color:${t.used?'var(--muted)':'var(--green)'}">${t.used?'Utilisé':'Valide'}</span></div>
+      </div>`).join('')}
+    </div>`,
+
+  stats:()=>`
+    <div class="g4" style="margin-bottom:14px">
+      ${[['Taux conversion','60%','Trial→Payant','var(--green)'],['Revenu/club','8.2K€','Billets générés','var(--gold)'],['Billets/club','310','Moyenne','var(--blue)'],['Croissance MRR','+200€','Ce mois','var(--orange)']].map(([l,v,s,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div><div class="ks" style="color:var(--muted);letter-spacing:1px">${s}</div></div>`).join('')}
+    </div>
+    <div class="g2">
+      <div class="panel">
+        <div class="pt" style="margin-bottom:14px">Clubs — Revenus générés</div>
+        ${[...CLUBS].filter(c=>c.rev>0).sort((a,b)=>b.rev-a.rev).map((c,i)=>{
+          const max=22250;const pct=Math.round(c.rev/max*100)
+          return `<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <div><div style="font-size:12px;font-weight:600">${i+1}. ${c.nom}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-top:1px">${c.billets} billets</div></div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${c.color};letter-spacing:1px">${c.rev.toLocaleString()}€</div>
+            </div>
+            <div class="progress"><div class="pfill" style="width:${pct}%;background:${c.color}"></div></div>
+          </div>`}).join('')}
+      </div>
+      <div class="panel">
+        <div class="pt" style="margin-bottom:14px">Entonnoir de conversion</div>
+        <div style="display:flex;gap:0">
+          ${[[CLUBS.length,'Inscrits','var(--blue)'],[trials,'En trial','var(--gold)'],[actifs,'Payants','var(--green)']].map(([n,l,c],i,a)=>`
+          <div style="flex:1;text-align:center;padding:18px 10px;background:${c}10;border:1px solid ${c}20;margin-left:${i>0?-1:0}px">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:${c};letter-spacing:2px;line-height:1">${n}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:4px 0">${l}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:${c}">${Math.round(n/CLUBS.length*100)}%</div>
+          </div>${i<a.length-1?'<div style="display:flex;align-items:center;color:rgba(255,255,255,0.15);font-size:16px">→</div>':''}`).join('')}
         </div>
       </div>
+    </div>`,
+
+  notifs:()=>`
+    <div class="g4" style="margin-bottom:14px">
+      ${[['Critiques','1','var(--red)'],['Avertissements','1','var(--orange)'],['Bonnes nouvelles','1','var(--green)'],['Informations','1','var(--blue)']].map(([l,v,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div></div>`).join('')}
     </div>
-  `).join('');
-}
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${[
+        {type:'error',title:'Discoteca Andén — Paiement en retard',detail:'9 jours de retard. Vente bloquée depuis le jour 8.',time:'Il y a 9 jours',bg:'var(--red-dim)',border:'rgba(224,82,82,0.25)',color:'var(--red)',icon:'✕'},
+        {type:'warning',title:'Sala Gold — Trial expire dans 12 jours',detail:'Contacter pour convertir en abonnement payant.',time:'12 jours restants',bg:'var(--orange-dim)',border:'rgba(240,136,74,0.25)',color:'var(--orange)',icon:'⚠'},
+        {type:'success',title:'Nouveau club inscrit — Joy Eslava',detail:'Madrid · Trial 90 jours démarré',time:'22 Mar 2026',bg:'var(--green-dim)',border:'rgba(62,207,142,0.25)',color:'var(--green)',icon:'✓'},
+        {type:'info',title:'28 billets vendus en 24h',detail:'Volume total : 510€ sur toute la plateforme',time:'Dernières 24h',bg:'var(--blue-dim)',border:'rgba(91,156,246,0.25)',color:'var(--blue)',icon:'◎'},
+      ].map((a,i)=>`
+      <div class="alert" style="background:${a.bg};border:1px solid ${a.border};animation-delay:${i*.07}s">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:30px;height:30px;background:${a.color}15;border:1px solid ${a.color}30;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:${a.color};flex-shrink:0">${a.icon}</div>
+          <div><div style="font-size:12px;font-weight:600;color:${a.color};margin-bottom:2px">${a.title}</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px">${a.detail}</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px">${a.time}</div>
+          <button class="btn-sm" style="background:${a.color}15;border:1px solid ${a.color}30;color:${a.color}" onclick="alert('Email envoyé!')">✉ Contacter</button>
+        </div>
+      </div>`).join('')}
+    </div>`,
 
-renderEventsList('eventsList');
-
-// Events manage list
-const eventsManage = document.getElementById('eventsManageList');
-if (eventsManage) {
-  eventsManage.innerHTML = events.map(ev => `
-    <div class="event-row">
-      <div class="event-dot" style="background:${ev.color}"></div>
-      <div class="event-row-info">
-        <div class="event-row-name">${ev.name}</div>
-        <div class="event-row-meta">${ev.date} · ${ev.sold}/${ev.total} entradas</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="btn-outline" style="padding:6px 12px;font-size:9px;">Editar</button>
-        <button class="panel-action" style="padding:6px 12px;border:1px solid rgba(224,82,82,0.3);color:var(--red);font-size:9px;">✕</button>
-      </div>
+  support:()=>`
+    <div class="g3" style="margin-bottom:14px">
+      ${[['Tickets ouverts','2','var(--red)'],['En cours','1','var(--orange)'],['Résolus','5','var(--green)']].map(([l,v,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div></div>`).join('')}
     </div>
-  `).join('');
-}
+    <div class="panel">
+      <div class="pt" style="margin-bottom:14px">Tickets de support</div>
+      ${[
+        {club:'Gallery Club',sujet:'Comment personnaliser les couleurs du site ?',msg:"Bonjour, j'aimerais changer la couleur dorée en bleue pour notre identité visuelle.",priorite:'normale',statut:'ouvert',date:'22 Mar'},
+        {club:'Sala Gold',sujet:'Problème scanner QR sur iPhone',msg:"Le scanner ne s'ouvre pas sur Safari iOS 17. Avez-vous une solution ?",priorite:'haute',statut:'en_cours',date:'21 Mar'},
+        {club:'Fabrik',sujet:'Demande export données clients',msg:"Nous avons besoin d'un export CSV de tous nos clients pour notre CRM.",priorite:'basse',statut:'resolu',date:'20 Mar'},
+      ].map(t=>{
+        const pc={normale:{c:'var(--gold)',bg:'var(--gold-dim)',b:'rgba(201,168,76,0.2)',l:'NORMALE'},haute:{c:'var(--orange)',bg:'var(--orange-dim)',b:'rgba(240,136,74,0.2)',l:'HAUTE'},basse:{c:'var(--muted)',bg:'rgba(255,255,255,0.03)',b:'var(--border2)',l:'BASSE'}}[t.priorite]
+        const sc={ouvert:{c:'var(--red)',l:'OUVERT'},en_cours:{c:'var(--orange)',l:'EN COURS'},resolu:{c:'var(--green)',l:'RÉSOLU'}}[t.statut]
+        return `<div style="padding:18px 0;border-bottom:1px solid var(--border2)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px">
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap">
+                <span style="font-family:'DM Mono',monospace;font-size:7px;padding:2px 6px;background:${pc.bg};border:1px solid ${pc.b};color:${pc.c};text-transform:uppercase;letter-spacing:1px">${pc.l}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:8px;color:${sc.c};letter-spacing:1px">● ${sc.l}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px">${t.date}</span>
+              </div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px">${t.sujet}</div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px">${t.club}</div>
+            </div>
+            <button class="btn-sm" style="background:${t.statut==='resolu'?'var(--green-dim)':'var(--gold-dim)'};border:1px solid ${t.statut==='resolu'?'rgba(62,207,142,0.2)':'rgba(201,168,76,0.2)'};color:${t.statut==='resolu'?'var(--green)':'var(--gold)'};flex-shrink:0" onclick="alert('${t.statut==='resolu'?'Ticket résolu':'Répondre au ticket de '+t.club}')">
+              ${t.statut==='resolu'?'✓ Résolu':'✉ Répondre'}
+            </button>
+          </div>
+          <div style="padding:10px 12px;background:rgba(255,255,255,0.02);border:1px solid var(--border2);font-size:12px;color:var(--muted);line-height:1.7">${t.msg}</div>
+        </div>`}).join('')}
+    </div>`,
 
-// ── RESERVAS ──
-const reservas = [
-  { name: 'Sofia R.', detail: 'Mesa VIP · 4 pers · SAB 29 MAR', status: 'vip', icon: '👑' },
-  { name: 'Marcus T.', detail: 'General · 2 pers · VIE 28 MAR', status: 'confirmed', icon: '👤' },
-  { name: 'Ana M.', detail: 'General · 3 pers · SAB 29 MAR', status: 'pending', icon: '👤' },
-  { name: 'Javi L.', detail: 'Mesa VIP · 6 pers · SAB 5 ABR', status: 'pending', icon: '👤' },
-  { name: 'Laura K.', detail: 'General · 2 pers · VIE 28 MAR', status: 'pending', icon: '👤' },
-];
-
-const statusLabel = { vip:'★ VIP', confirmed:'Confirmado', pending:'Pendiente' };
-
-function renderReservas(containerId, limit) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  const list = limit ? reservas.slice(0, limit) : reservas;
-  el.innerHTML = list.map(r => `
-    <div class="resa-row">
-      <div class="resa-avatar">${r.icon}</div>
-      <div>
-        <div class="resa-name">${r.name}</div>
-        <div class="resa-detail">${r.detail}</div>
-      </div>
-      <div class="resa-status status-${r.status}">${statusLabel[r.status]}</div>
-      ${r.status === 'pending' ? `<button class="btn-outline" style="padding:4px 10px;font-size:9px;margin-left:4px;">✓</button>` : ''}
+  logs:()=>`
+    <div class="g4" style="margin-bottom:14px">
+      ${[["Actions aujourd'hui",'7','var(--gold)'],['Billets vendus','3','var(--green)'],['Paiements échoués','1','var(--red)'],['Total événements','7','var(--blue)']].map(([l,v,c])=>`
+      <div class="kpi"><div class="kl">${l}</div><div class="kv" style="color:${c}">${v}</div></div>`).join('')}
     </div>
-  `).join('');
-}
-
-renderReservas('reservasList', 4);
-renderReservas('allReservasList');
-
-// ── SCAN HISTORY ──
-const scanHistory = document.getElementById('scanHistory');
-if (scanHistory) {
-  const scans = [
-    { name: 'Carlos M.', time: '23:47', status: 'ok' },
-    { name: 'Sofia R.', time: '23:45', status: 'ok' },
-    { name: 'DESCONOCIDO', time: '23:44', status: 'err' },
-    { name: 'Marcus T.', time: '23:42', status: 'ok' },
-    { name: 'Ana M.', time: '23:41', status: 'ok' },
-    { name: 'DUPLICADO', time: '23:39', status: 'err' },
-  ];
-  scanHistory.innerHTML = scans.map(s => `
-    <div class="resa-row">
-      <div class="resa-avatar" style="${s.status==='ok'?'background:var(--green-dim);border-color:rgba(62,207,142,0.3)':'background:var(--red-dim);border-color:rgba(224,82,82,0.3)'}">${s.status==='ok'?'✔':'✕'}</div>
-      <div>
-        <div class="resa-name">${s.name}</div>
-        <div class="resa-detail">${s.time} · TECHNO NIGHT</div>
+    <div class="panel">
+      <div class="ph"><div class="pt">Historique — 22 Mars 2026</div><span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted2)">${LOGS.length} actions</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border2)">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--gold);text-transform:uppercase">AUJOURD'HUI</div>
+        <div style="flex:1;height:1px;background:rgba(201,168,76,0.12)"></div>
       </div>
-      <div class="resa-status ${s.status==='ok'?'status-confirmed':'status-pending'}" style="${s.status!=='ok'?'background:var(--red-dim);color:var(--red);border-color:rgba(224,82,82,0.2)':''}">${s.status==='ok'?'VÁLIDO':'RECHAZADO'}</div>
-    </div>
-  `).join('');
+      ${LOGS.map((log,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:${i%2===0?'rgba(255,255,255,0.01)':'transparent'}">
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted2);letter-spacing:1px;flex-shrink:0;width:44px">${log.time}</div>
+        <div style="width:24px;height:24px;background:${log.color}15;border:1px solid ${log.color}25;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:${log.color};flex-shrink:0">${log.icon}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;color:${log.color};text-transform:uppercase;flex-shrink:0;width:100px">${log.action.replace('_',' ')}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:1px;flex-shrink:0">${log.club}</div>
+        <div style="font-size:11px;color:var(--muted);flex:1">${log.detail}</div>
+      </div>`).join('')}
+    </div>`,
 }
 
-// ── NEWSLETTER HISTORY ──
-const nlHistory = document.getElementById('newsletterHistory');
-if (nlHistory) {
-  const nl = [
-    { subject: '🔥 Techno Night con Charlotte de Witte', date: '20 MAR', sent: 1482, open: 68 },
-    { subject: 'Black Coffee llega a Málaga 🎵', date: '13 MAR', sent: 1448, open: 71 },
-    { subject: 'Programa VIP — Temporada 2026', date: '6 MAR', sent: 1401, open: 55 },
-  ];
-  nlHistory.innerHTML = nl.map(n => `
-    <div class="event-row">
-      <div style="flex:1;min-width:0;">
-        <div class="event-row-name" style="font-size:12px;">${n.subject}</div>
-        <div class="event-row-meta">${n.date} · ${n.sent} enviados</div>
-      </div>
-      <div class="resa-status status-confirmed">${n.open}% abierto</div>
-    </div>
-  `).join('');
+// ── NAVIGATION ──
+const TITLES={overview:'VUE GLOBALE',clubs:'TOUS LES CLUBS',finances:'FINANCES',tickets:'BILLETS GLOBAUX',stats:'STATISTIQUES',notifs:'NOTIFICATIONS',support:'SUPPORT',logs:"LOGS D'ACTIVITÉ"}
+
+function go(page, navEl){
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'))
+  if(navEl) navEl.classList.add('on')
+  else document.querySelector('.ni[onclick*="'+page+'"]')?.classList.add('on')
+  document.getElementById('page-title').textContent=TITLES[page]||page.toUpperCase()
+  document.getElementById('content').innerHTML=PAGES[page]?PAGES[page]():'<div class="panel"><div class="pt">En développement</div></div>'
+  if(page==='overview') setTimeout(()=>{
+    const el=document.getElementById('adminChart')
+    if(!el) return
+    const data=[3200,4800,5100,6400,9200,12400]
+    const max=Math.max(...data)
+    el.innerHTML=data.map((v,i)=>`<div class="bw"><div class="bval">${(v/1000).toFixed(1)}K</div><div class="bar ${i===5?'today':''}" style="height:${Math.round(v/max*100)}%;background:${i===5?'var(--gold)':'rgba(201,168,76,0.25)'};border:1px solid ${i===5?'var(--gold)':'rgba(201,168,76,0.35)'}"></div></div>`).join('')
+  },50)
+  closeSb()
 }
 
-// ── STATS CHART ──
-const statsChart = document.getElementById('statsChart');
-if (statsChart) {
-  const statsData = [
-    { label: 'TECHNO', val: 5400, color: 'var(--gold)' },
-    { label: 'HOUSE', val: 3600, color: 'var(--blue)' },
-    { label: 'REGGAE', val: 2100, color: 'var(--green)' },
-    { label: 'MINIMAL', val: 4200, color: 'var(--orange)' },
-    { label: 'OPENING', val: 3100, color: 'var(--red)' },
-  ];
-  const maxStats = Math.max(...statsData.map(d => d.val));
-  statsData.forEach(d => {
-    const pct = Math.round((d.val / maxStats) * 100);
-    const wrap = document.createElement('div');
-    wrap.className = 'bar-wrap';
-    wrap.innerHTML = `
-      <div class="bar-val" style="color:${d.color}">${(d.val/1000).toFixed(1)}K€</div>
-      <div class="bar" style="height:${pct}%;background:${d.color}22;border-color:${d.color}44;"></div>
-      <div class="bar-label" style="color:${d.color}88">${d.label}</div>
-    `;
-    statsChart.appendChild(wrap);
-  });
+// ── SIDEBAR MOBILE ──
+function openSb(){
+  document.getElementById('sidebar').classList.add('open')
+  document.getElementById('sb-overlay').style.display='block'
 }
+function closeSb(){
+  document.getElementById('sidebar').classList.remove('open')
+  document.getElementById('sb-overlay').style.display='none'
+}
+
+// ── INIT ──
+document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}).toUpperCase()
+go('overview', document.querySelector('.ni.on'))
 </script>
 </body>
 </html>
